@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <!-- Fontawesome CSS -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous" />
+
+    <title>Sistema de registros</title>
+  </head>
+  <body>
+    <div class="container-fluid">
+        <div class="px-3 pt-md-5 pb-md-4 mx-auto text-center">
+            <h1 class="display-4">Registros de Alumnos</h1>
+            <p class="lead">Sistema de registro de alumnos realizado con JavaScript.</p>
+        </div>
+      
+      <div class="row">
+
+        <div class="col-4">
+          <div class="alert alert-success d-none" id="addSuccess" role="alert">
+            <i class="fas fa-check"></i> Alumno registrado con exito!
+          </div>
+          <div class="alert alert-info d-none" id="removeSuccess" role="alert">
+            <i class="fas fa-check"></i> Alumno elminado con exito!
+          </div>
+          <div class="alert alert-danger d-none" id="error" role="alert">
+            <i class="fas fa-window-close"></i> Todos los campos son obligatorios
+          </div>
+          <div class="alert alert-danger d-none" id="errorAge" role="alert">
+            <i class="fas fa-window-close"></i> La edad parece ser incorrecta
+          </div>
+          <div class="alert alert-danger d-none" id="errorId" role="alert">
+            <i class="fas fa-window-close"></i> La cedula parece ser incorrecta
+          </div>
+            <div class="card">
+                <div class="card-header">
+                  <i class="fas fa-user"></i> Datos del Alumno
+                </div>
+                <div class="card-body">
+                  
+                    <div class="row p-2">
+                      <form onsubmit="event.preventDefault(); onFormSubmit();" autocomplete="off">
+                        <div class="form-row">
+                          <div class="form-group col">
+                            <label for="name">Nombre</label>
+                            <input type="text"  id="name" name="name" class="form-control" placeholder="Franklin">
+                          </div>
+                          <div class="form-group col">
+                            <label for="lastName">Apellido</label>
+                            <input type="text" id="lastName" name="lastName"  class="form-control" placeholder="Villalobos">
+                          </div>
+                        </div>
+                        <div class="form-row">
+                          <div class="form-group col">
+                            <label for="id">Cédula</label>
+                            <input type="text" id="id" name="id"  class="form-control" placeholder="19989762">
+                          </div>
+                          <div class="form-group col">
+                            <label for="age">Edad</label>
+                            <input type="text" id="age" name="age"  class="form-control" placeholder="28">
+                          </div>
+                        </div>
+                        <div class="form-row">
+                          <div class="form-group col">
+                            <label for="address">Dirección</label>
+                            <input type="text" id="address" name="address"  class="form-control" placeholder="Nueva Lucha">
+                          </div>
+                          <div class="form-group col">
+                            <label for="gender">Género</label>
+                            <select class="form-control" id="gender" name="gender">
+                              <option value="Femenino">Femenino</option>
+                              <option value="Masculino">Masculino</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-row">
+                          <div class="form-group col">
+                              <button type="submit" class="btn btn-primary mt-3 btn-sm"><i class="fas fa-save"></i> Registrar Alumno</button>
+                          </div>
+                        </div>
+                          
+                          
+                          
+                      </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-8">
+            <table class="table" id="tableList">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Apellido</th>
+                <th scope="col">Cédula</th>
+                <th scope="col">Edad</th>
+                <th scope="col">Dirección</th>
+                <th scope="col">Género</th>
+                <th scope="col">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+          <div class="container text-center" id="noAlumns">
+            No hay alumnos registrados aun. <i class="fas fa-exclamation text-danger"></i>
+          </div>
+        </div>
+    </div>
+        
+      
+    </div>
+
+<!-- Modal que muestra los datos del alumno -->
+  <div class="modal" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Datos del alumno</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="container">
+              <div class="row">
+                <div class="col-6">
+                  <strong>Nombre:</strong> <span id="nameView"></span>
+                </div>
+                <div class="col-6">
+                  <strong>Apellido:</strong> <span id="lastNameView"></span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <strong>Cédula:</strong> <span id="idView"></span>
+                </div>
+                <div class="col-6">
+                  <strong>Edad:</strong> <span id="ageView"></span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <strong>Dirección:</strong> <span id="addressView"></span>
+                </div>
+                <div class="col-6">
+                  <strong>Genero:</strong> <span id="genderView"></span>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-window-close"></i> Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Modal de confirmación para elimnar alumno -->
+<div class="modal" id="modalConfirm" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirma la acción</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>¿Estas seguro de elimnar este alumno?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-window-close"></i> Cancelar</button>
+        <button id="btnRemove" type="button" class="btn btn-danger"><i class="fas fa-trash"></i> Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <!-- Enable TOOLTIPS -->
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+    });
+</script>
+
+    <!--  CUSTOMS SCRIPTS -->
+    <script type="text/javascript">
+      //envio de form
+        function onFormSubmit(){
+          if(validate())
+          {
+            var formData = readFormData();
+            insertNew(formData);
+          }
+        }
+      // Recoger datos del FORM
+      function readFormData(){
+        var formData = {};
+        formData["name"] = document.getElementById("name").value;
+        formData["lastName"] = document.getElementById("lastName").value;
+        formData["id"] = document.getElementById("id").value;
+        formData["age"] = document.getElementById("age").value;
+        formData["address"] = document.getElementById("address").value;
+        formData["gender"] = document.getElementById("gender").value;
+
+        return formData;
+      }
+      // Insertagr el registro en la tabla
+      function insertNew(data){
+        var table = document.getElementById("tableList").getElementsByTagName("tbody")[0];
+        var newRow = table.insertRow(table.length);
+        cell1 = newRow.insertCell(0);
+        cell1.innerHTML = data.name;
+        cell2 = newRow.insertCell(1);
+        cell2.innerHTML = data.lastName;
+        cell3 = newRow.insertCell(2);
+        cell3.innerHTML = data.id;
+        cell4 = newRow.insertCell(3);
+        cell4.innerHTML = data.age;
+        cell5 = newRow.insertCell(4);
+        cell5.innerHTML = data.address;
+        cell6 = newRow.insertCell(5);
+        cell6.innerHTML = data.gender;
+        cell7 = newRow.insertCell(6);
+        cell7.innerHTML = '<button onclick="openModal(this)" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Ver detalles"><i class="fas fa-eye fa-sm"></i></button> <button onclick="modalDelete(this)" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Borrar alumno"><i class="fas fa-trash"></i></button>';
+
+      document.getElementById("addSuccess").classList.add("d-block");
+          setTimeout(function(){
+            document.getElementById("addSuccess").classList.remove("d-block");
+          },3000);
+
+        resetForm();
+        tableLength()
+      }
+      // Resetea formulario
+      function resetForm(){
+        document.getElementById("name").value = "";
+        document.getElementById("lastName").value = "";
+        document.getElementById("id").value = "";
+        document.getElementById("age").value = "";
+        document.getElementById("address").value = "";
+        document.getElementById("gender").value = "Femenino";
+      }
+      // Llama a modal de confirmacion antes de borrar
+      function modalDelete(td){
+        $('#modalConfirm').modal('show');
+        row = td.parentElement.parentElement.rowIndex;
+        document.getElementById("btnRemove").setAttribute("onclick", "remove("+row+")")
+      }
+      // Borrar datos del alumno
+      function remove(td){
+        document.getElementById("tableList").deleteRow(td);
+        $('#modalConfirm').modal('hide');
+         document.getElementById("removeSuccess").classList.add("d-block");
+          setTimeout(function(){
+            document.getElementById("removeSuccess").classList.remove("d-block");
+          },3000);
+        tableLength();
+      }
+      //Validacion de datos
+        function validate(){
+          var isValid = true;
+          id = document.getElementById("id").value;
+          age = document.getElementById("age").value;
+
+          if(document.getElementById("name").value == "" || document.getElementById("lastName").value == "" || document.getElementById("id").value == "" || document.getElementById("age").value == "" || document.getElementById("address").value == "" || document.getElementById("gender").value == "") 
+          {
+            isValid = false;
+            document.getElementById("error").classList.add("d-block");
+            setTimeout(function(){
+              document.getElementById("error").classList.remove("d-block");
+            },3000);
+          }
+          else if(isNaN(id))
+          {
+            isValid = false;
+            document.getElementById("errorId").classList.add("d-block");
+            setTimeout(function(){
+              document.getElementById("errorId").classList.remove("d-block");
+            },3000);
+          }
+          else if(age<=0 || age>110 || isNaN(age))
+          {
+            isValid = false;
+            document.getElementById("errorAge").classList.add("d-block");
+            setTimeout(function(){
+              document.getElementById("errorAge").classList.remove("d-block");
+            },3000);
+          }
+
+          return isValid;
+        }
+      // Abrir modal con datos del alumno
+      function openModal(td){
+        $('#myModal').modal('show');
+
+        selectedRow = td.parentElement.parentElement;
+        document.getElementById("nameView").innerHTML = selectedRow.cells[0].innerHTML;
+        document.getElementById("lastNameView").innerHTML = selectedRow.cells[1].innerHTML;
+        document.getElementById("idView").innerHTML = selectedRow.cells[2].innerHTML;
+        document.getElementById("ageView").innerHTML = selectedRow.cells[3].innerHTML;
+        document.getElementById("addressView").innerHTML = selectedRow.cells[4].innerHTML;
+        document.getElementById("genderView").innerHTML = selectedRow.cells[5].innerHTML;
+      }
+      // Controla mensaje de tabla vacias
+      function tableLength(){
+        var lTable = tableList.rows.length;
+        if(lTable == 1)
+        {
+          document.getElementById("noAlumns").classList.add("d-block");
+        }
+        else
+        {
+          document.getElementById("noAlumns").classList.add("d-none");
+        }
+      }
+    </script>
+  </body>
+</html>
